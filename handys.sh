@@ -1,0 +1,1 @@
+convert -size 32x32 xc:#FF5733 -fill "#FFFFFF" -gravity center -pointsize 24 -draw "text 0,0 'P'" favicon.png

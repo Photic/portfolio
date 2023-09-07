@@ -1,6 +1,8 @@
 use actix::{Actor, StreamHandler};
-use actix_web::{App, HttpServer, web, HttpRequest, Error, HttpResponse};
+use actix_files::NamedFile;
+use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer, Result};
 use actix_web_actors::ws;
+use handlebars::Handlebars;
 
 mod api;
 mod router;
@@ -26,16 +28,39 @@ async fn index(req: HttpRequest, stream: web::Payload) -> Result<HttpResponse, E
     resp
 }
 
+async fn serve_favicon() -> Result<NamedFile> {
+    // Serve the favicon.ico file from the "static" folder
+    Ok(NamedFile::open("static/favicon.ico")?)
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init();
 
+    // Create a Handlebars instance and register templates.
+    let mut hb = Handlebars::new();
+
+    hb.register_templates_directory(".hbs", "./static/pages")
+        .expect("Failed to register templates directory.");
+
+    hb.register_templates_directory(".hbs", "./static/components")
+        .expect("Failed to register components directory.");
+
+    let hb_state = web::Data::new(hb);
+
     HttpServer::new(move || {
         App::new()
-        .service(router::navigation::route("/routes/navigation"))
-        .service(api::health_service::route("/api/v1/health"))
-        .route("/ws/", web::get().to(index))
-        .service(actix_files::Files::new("/", "./public/").index_file("index.html"))
+            .app_data(hb_state.clone())
+            .service(api::health_service::route("/api/v1/health"))
+            .route("/ws/", web::get().to(index))
+            .service(actix_files::Files::new("/static", "static"))
+            .service(web::resource("/").route(web::get().to(router::navigation::index)))
+            .service(
+                web::resource("/{page_name}")
+                    .route(web::get().to(router::navigation::default_page_navigation)),
+            )
+            // Catch all 404 page.
+            .default_service(web::route().to(router::navigation::not_found))
     })
     .bind(("127.0.0.1", 8090))?
     .run()

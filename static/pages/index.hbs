@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Steen</title>
+		<link rel="stylesheet" href="/static/styles.css" />
+		<link rel="icon" type="image/x-icon" href="/static/assets/favicon.png">
+
+		<style>
+			.github-logo {
+				width: 1.5rem; /* Adjust to your desired width */
+				height: auto; /* Maintain the aspect ratio */
+			}
+		</style>
+
+		<script src="/static/htmx.min.js"></script>
+	</head>
+
+	<body class="bg-blue-100 md:mx-auto py-4 px-8">
+		<header class="">
+			<nav class="flex">
+				<div class="w-full flex justify-center">
+					<button
+						class="px-4"
+						hx-get="/"
+						hx-boost="true"
+						hx-push-url="true"
+						hx-trigger="click"
+						hx-target="#content"
+						hx-swap="innerHTML">
+						Home
+					</button>
+					<button
+						class="px-4"
+						hx-get="about"
+						hx-boost="true"
+						hx-push-url="true"
+						hx-trigger="click"
+						hx-target="#content"
+						hx-swap="innerHTML">
+						About
+					</button>
+					<button
+						class="px-4"
+						hx-get="games"
+						hx-boost="true"
+						hx-push-url="true"
+						hx-trigger="click"
+						hx-target="#content"
+						hx-swap="innerHTML">
+						Games
+					</button>
+				</div>
+				<button>
+					<img class="github-logo" src="/static/assets/github-mark.svg" alt="GitHub Logo" />
+				</button>
+			</nav>
+		</header>
+
+		<main
+			id="content"
+			class="px-4">
+                {{{content}}}
+            </main>
+
+		<script src="/static/websocket_hot_reload.js"></script>
+	</body>
+</html>
