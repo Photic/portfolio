@@ -26,4 +26,10 @@ socket.onclose = (event) => {
 			})
 			.catch(() => {})
 	}, 100)
+
+	let timeout = setTimeout(() => {
+		location.reload()
+		clearTimeout(timeout).catch(() => {})
+		clearInterval(interval).catch(() => {})
+	}, 10000)
 }

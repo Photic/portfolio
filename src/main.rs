@@ -28,11 +28,6 @@ async fn index(req: HttpRequest, stream: web::Payload) -> Result<HttpResponse, E
     resp
 }
 
-async fn serve_favicon() -> Result<NamedFile> {
-    // Serve the favicon.ico file from the "static" folder
-    Ok(NamedFile::open("static/favicon.ico")?)
-}
-
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init();
