@@ -3,17 +3,22 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>Steen</title>
-		<link rel="stylesheet" href="/static/styles.css" />
-		<link rel="icon" type="image/x-icon" href="/static/assets/favicon.png">
+		<link rel="stylesheet" type="text/css" href="/static/styles.css" />
+		<link rel="icon" type="image/png" href="/static/assets/favicon.png">
+		<script type="application/javascript" src="/static/htmx.min.js"></script>
 
 		<style>
-			.github-logo {
+			.icon_size {
 				width: 1.5rem; /* Adjust to your desired width */
 				height: auto; /* Maintain the aspect ratio */
 			}
 		</style>
 
-		<script src="/static/htmx.min.js"></script>
+		<script type="application/javascript">
+			function redirect_link(link) {
+				window.open(link) || window.location(link);
+			}
+		</script>
 	</head>
 
 	<body class="bg-red-100 md:mx-auto py-4 px-8">
@@ -42,17 +47,21 @@
 					</button>
 					<button
 						class="px-4"
-						hx-get="games"
+						hx-get="arcade"
 						hx-boost="true"
 						hx-push-url="true"
 						hx-trigger="click"
 						hx-target="#content"
 						hx-swap="innerHTML">
-						Games
+						Arcade
 					</button>
 				</div>
-				<button>
-					<img class="github-logo" src="/static/assets/github-mark.svg" alt="GitHub Logo" />
+				<button class="px-4" hx-on:click="redirect_link('https://www.linkedin.com/in/steen-ren%C3%A9-hansen-71a23b92/')" >
+					<img type="image/png" class="icon_size" src="/static/assets/LI-In-Bug.png" alt="GitHub Logo" />
+				</button>
+
+				<button hx-on:click="redirect_link('https://github.com/Photic')" >
+					<img class="icon_size" src="/static/assets/github-mark.svg" alt="GitHub Logo" />
 				</button>
 			</nav>
 		</header>

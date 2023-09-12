@@ -28,8 +28,8 @@ socket.onclose = (event) => {
 	}, 100)
 
 	let timeout = setTimeout(() => {
-		location.reload()
 		clearTimeout(timeout).catch(() => {})
 		clearInterval(interval).catch(() => {})
-	}, 10000)
+		location.reload()
+	}, 8000)
 }

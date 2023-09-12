@@ -1,6 +1,5 @@
 use actix::{Actor, StreamHandler};
-use actix_files::NamedFile;
-use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer, Result};
+use actix_web::{web, App, Error, HttpRequest, HttpResponse, HttpServer, Result, middleware};
 use actix_web_actors::ws;
 use handlebars::Handlebars;
 
@@ -45,6 +44,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
+            .wrap(middleware::Compress::default())
             .app_data(hb_state.clone())
             .service(api::health_service::route("/api/v1/health"))
             .route("/ws/", web::get().to(index))
