@@ -15,7 +15,7 @@ socket.onclose = (event) => {
 	sessionStorage.setItem('socket', false)
 
 	let interval = setInterval(() => {
-		fetch('/api/v1/health/alive')
+		fetch('/api/v1/health')
 			.then((response) => {
 				if (response.ok) {
 					// You can handle the successful response here

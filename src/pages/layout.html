@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 	<head>
-		<meta charset="UTF-8" />
-		<title>Steen</title>
+		<title>{{title}}</title>
+		<script src="static/htmx.min.js"></script>
+		<link rel="icon" type="image/png" href="/static/assets/favicon.png" />
 		<link rel="stylesheet" type="text/css" href="/static/styles.css" />
-		<link rel="icon" type="image/png" href="/static/assets/favicon.png">
-		<script type="application/javascript" src="/static/htmx.min.js"></script>
 
 		<style>
 			.icon_size {
@@ -16,11 +15,10 @@
 
 		<script type="application/javascript">
 			function redirect_link(link) {
-				window.open(link) || window.location(link);
+				window.open(link) || window.location(link)
 			}
 		</script>
 	</head>
-
 	<body class="bg-red-100 md:mx-auto py-4 px-8">
 		<header class="">
 			<nav class="flex">
@@ -56,22 +54,18 @@
 						Arcade
 					</button>
 				</div>
-				<button class="px-4" hx-on:click="redirect_link('https://www.linkedin.com/in/steen-ren%C3%A9-hansen-71a23b92/')" >
+				<button class="px-4" hx-on:click="redirect_link('https://www.linkedin.com/in/steen-ren%C3%A9-hansen-71a23b92/')">
 					<img type="image/png" class="icon_size" src="/static/assets/LI-In-Bug.png" alt="GitHub Logo" />
 				</button>
 
-				<button hx-on:click="redirect_link('https://github.com/Photic')" >
+				<button hx-on:click="redirect_link('https://github.com/Photic')">
 					<img class="icon_size" src="/static/assets/github-mark.svg" alt="GitHub Logo" />
 				</button>
 			</nav>
 		</header>
 
-		<main
-			id="content"
-			class="px-4">
-                {{{content}}}
-            </main>
-
-		<script src="/static/websocket_hot_reload.js"></script>
+		<main id="content">{{{content}}}</main>
 	</body>
+
+	<script src="static/websocket_hot_reload.js"></script>
 </html>

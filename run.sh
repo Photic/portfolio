@@ -13,8 +13,8 @@ kill_processes() {
 trap 'pkill -f "cargo-watch"; kill_processes; exit' INT
 
 # Define your commands here
-command1="(cargo watch -s 'RUST_LOG=debug cargo run')"
-command2="(npx tailwindcss -i ./src/styles.css -o ./static/styles.css --watch)"
+command1="(cargo watch --ignore 'src/generated/*' --shell 'cargo run')"
+command2="(npx tailwindcss -i ./styles.css -o ./static/styles.css --watch)"
 
 # Run the commands in the background
 eval "$command1" &

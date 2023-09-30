@@ -1,27 +1,29 @@
 use actix_web::{
-    web::{self},
+    web::{self, Data},
     HttpRequest, HttpResponse,
 };
-
 use handlebars::Handlebars;
-use std::collections::BTreeMap;
+use serde::Serialize;
 
 use log::debug;
+use serde_json::json;
 
-fn conditional_render(
+use crate::model::template_names::TemplateName;
+
+fn conditional_render<T: Serialize>(
     request: &HttpRequest,
-    hb: web::Data<Handlebars<'_>>,
+    hb: Data<Handlebars<'_>>,
     partial_name: &str,
-    context: &BTreeMap::<&str, &str>,
+    context: &T,
 ) -> HttpResponse {
     let partial = match hb.render(partial_name, context) {
         Ok(partial) => partial,
         Err(e) => {
-            println!("Failed to render partial: {}", e);
+            debug!("Failed to render partial: {}", e);
             match page_not_found(hb) {
                 Ok(body) => return HttpResponse::NotFound().body(body),
                 Err(_) => {
-                    println!("Failed to render not_found");
+                    debug!("Failed to render not_found");
                     return HttpResponse::InternalServerError().finish();
                 }
             }
@@ -32,29 +34,35 @@ fn conditional_render(
         debug!("Partial request detected, returning partial.");
         HttpResponse::Ok().body(partial)
     } else {
-        let mut context: BTreeMap<&str, &str> = BTreeMap::new();
-        context.insert("content", partial.as_str());
-
-        let body = match hb.render("index", &context) {
-            Ok(body) => body,
+        debug!("Full request detected, returning full page.");
+        match hb.render(
+            TemplateName::layout.as_str(),
+            &json!({
+                "content": partial
+            }),
+        ) {
+            Ok(body) => HttpResponse::Ok().body(body),
             Err(e) => {
-                println!("Failed to render index: {}", e);
+                println!("Failed to render layout: {}", e);
                 return HttpResponse::InternalServerError().finish();
             }
-        };
-
-        debug!("Full request detected, returning full page.");
-        HttpResponse::Ok().body(body)
+        }
     }
 }
 
 pub async fn index(hb: web::Data<Handlebars<'_>>, request: HttpRequest) -> HttpResponse {
-    conditional_render(&request, hb, "home", &BTreeMap::<&str, &str>::new())
+    conditional_render(&request, hb, TemplateName::home.as_str(), &json!({}))
 }
 
-pub async fn default_page_navigation(hb: web::Data<Handlebars<'_>>, request: HttpRequest) -> HttpResponse {
-    let page_name = request.match_info().get("page_name").unwrap_or("index");
-    conditional_render(&request, hb, page_name, &BTreeMap::<&str, &str>::new())
+pub async fn default_page_navigation(
+    hb: web::Data<Handlebars<'_>>,
+    request: HttpRequest,
+) -> HttpResponse {
+    let page_name = request
+        .match_info()
+        .get("page_name")
+        .unwrap_or(TemplateName::home.as_str());
+    conditional_render(&request, hb, page_name, &json!({}))
 }
 
 // Catch all 404 page start.
@@ -70,7 +78,7 @@ pub async fn not_found(hb: web::Data<Handlebars<'_>>) -> HttpResponse {
 }
 
 fn page_not_found(hb: web::Data<Handlebars<'_>>) -> Result<String, HttpResponse> {
-    match hb.render("not_found", &BTreeMap::<&str, &str>::new()) {
+    match hb.render(TemplateName::not_found.as_str(), &json!({})) {
         Ok(body) => Ok(body),
         Err(e) => {
             println!("Failed to render not_found: {}", e);
