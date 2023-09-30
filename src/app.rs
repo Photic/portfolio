@@ -66,7 +66,6 @@ pub async fn default_page_navigation(
 }
 
 // Catch all 404 page start.
-
 pub async fn not_found(hb: web::Data<Handlebars<'_>>) -> HttpResponse {
     match page_not_found(hb) {
         Ok(body) => return HttpResponse::NotFound().body(body),
@@ -86,5 +85,4 @@ fn page_not_found(hb: web::Data<Handlebars<'_>>) -> Result<String, HttpResponse>
         }
     }
 }
-
 // Cach all 404 page end.
