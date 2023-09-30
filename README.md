@@ -7,7 +7,9 @@
 - [Portfolio App, using Rust, Actix-web, Handlebars and HTMX](#portfolio-app-using-rust-actix-web-handlebars-and-htmx)
   - [Content](#content)
   - [Project](#project)
-  - [Templating](#templating)
+  - [Conditional rendering](#conditional-rendering)
+    - [Problem](#problem)
+    - [Solution](#solution)
 
 ## Project
 
@@ -28,9 +30,11 @@ sh run.sh
 
 Provided that you have the required dependencies installed, ei Rust, Node, NPM and Cargo with cargo-watch plus the tailwindcss cli globally. I will not go into details on how to install these, as there are plenty of guides out there on how to do it.
 
-## Templating
+## Conditional rendering
 
-Because I am not going to use a frontend framwork, Iv opted to do some conditional_rendering of my html code. This was nessecary because of how handlebars and HTMX works. The problem statement is like this. 
+Because I am not going to use a frontend framwork, Iv opted to do some conditional_rendering of my html code. This was nessecary because of how handlebars and HTMX works. The problem statement is like this.
+
+### Problem
 
 If I am at:
 
@@ -69,7 +73,9 @@ This code, asks on the endpont /about for the html code, and then replaces the i
 
 So, how do we solve this. We could do an entire if else if statement in our layout.html file to check what the url is, and then render the correct template. But that is not very nice, and it would be a lot of code. Plus I chose to do HTMX to reduce this kind of frontend code, and to get rid of as much javascript as possible.
 
-In comes my solution, in the file below, I have created a Rust function amptly called conditional_render. This function looks at the header of the request. If the header contains the key "hx-target", then we know that HTMX is trying to get some code, and that we only have to send the partial template back to the frontend. If the header does not contain the key "hx-target", then we know that a full load is required, and we can render the entire layout.html with the requested partial template inserted into the layout content.
+### Solution
+
+In comes my solution, in the file below, I have created a Rust function amptly called conditional_render. This function looks at the header of the request. If the header contains the key "hx-target", then we know that HTMX is trying to get some code that it can replace in some target, and that we only have to send the partial template back to the frontend. If the header does not contain the key "hx-target", then we know that a full load is required, and we can render the entire layout.html with the requested partial template inserted into the layout content.
 
 [Link to app.rs](./src/app.rs)
 
@@ -81,4 +87,4 @@ On top of this, we use an actix_web service to determine the current page_name (
     )
 ```
 
-Here, page_name is just send directly to our conditional_render function. Which will give us the page we need on a full load.
+Here, page_name is just send directly to our conditional_render function. Which will give us the page we need on a full load. If there is no page to render, we the the NOT_FOUND page.
