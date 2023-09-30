@@ -7,6 +7,7 @@
 - [Portfolio App, using Rust, Actix-web, Handlebars and HTMX](#portfolio-app-using-rust-actix-web-handlebars-and-htmx)
   - [Content](#content)
   - [Project](#project)
+  - [Templating](#templating)
 
 ## Project
 
@@ -26,3 +27,40 @@ sh run.sh
 ```
 
 Provided that you have the required dependencies installed, ei Rust, Node, NPM and Cargo with cargo-watch plus the tailwindcss cli globally. I will not go into details on how to install these, as there are plenty of guides out there on how to do it.
+
+## Templating
+
+Because I am not going to use a frontend framwork, Iv opted to do some conditional_rendering of my html code. This was nessecary because of how handlebars and HTMX works. The problem statement is like this. 
+
+If I am at:
+
+```bash
+http://localhost:8090
+```
+
+I want to render the layout.html template, and add the home.html template to the body of the layout.html template. This is easy just using handlebars.
+
+```html
+{{> home }}
+```
+
+However, what if I change the url to:
+
+```bash
+http://localhost:8090/about
+```
+
+Well, a way to handle this would be to have a route in actix_web for every single page, and then just render the layout.html template, and add the about.html.
+However, now I have send the entire layout.html file again to the browser. This is not ideal, as I would like to only send the about.html part, and have it switch out in the browser where it is needed. This is where HTMX comes in.
+
+```html
+<button hx-get="about" hx-boost="true" hx-push-url="true" hx-trigger="click" hx-target="#content" hx-swap="innerHTML">About</button>
+```
+
+This code, asks on the endpont /about for the html code, and then replaces the innerHTML of the element with the id of content with the html code it gets back. This is great, because now I can just have one route in actix_web. However, what if I refresh the browser on /about. About will only render when when the button is clicked. Because that is the only way to code knows how to get me my code.
+
+So, how do we solve this. We could do an entire if else if statement in our layout.html file to check what the url is, and then render the correct template. But that is not very nice, and it would be a lot of code. Plus I chose to do HTMX to reduce this kind of frontend code, and to get rid of as much javascript as possible.
+
+In comes my solution, in the files below, I have created a Rust function amptly called conditional_render. This function looks at the header of the request. If the header contains the key "hx-target", then we know that HTMX is trying to get some code, and then we know that we only have to send the partial template back to the frontend. If the header does not contain the key "hx-target", then we know that a full load is required, and we can render the entire layout.html with the requested partial template inserted into the layout content.
+
+[Link to Example File](./src/app.rs)
