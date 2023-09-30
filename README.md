@@ -2,6 +2,14 @@
 
 30 - Sep 2023 : 13:45. Made the repository public
 
+## Content
+
+- [Portfolio App, using Rust, Actix-web, Handlebars and HTMX](#portfolio-app-using-rust-actix-web-handlebars-and-htmx)
+  - [Content](#content)
+  - [Project](#project)
+
+## Project
+
 I started this project because I wanted to be better at Rust, but also because the world of "hypermedia as the engine of application state" (HATEOAS) is something I want to explore. In my opinion, the best way to learn something is to build something with it. So, I decided to build a portfolio app, using Rust, Actix-web, Handlebars and HTMX.
 
 - Rust, because I like the typesafety and the error handling of the rust-analyzer. Being albe to see where in your code something is wrong, and a lot of the time even getting suggestions on how to fix said code is a great help.
@@ -17,7 +25,4 @@ To get it all running together iv made a run.sh file, which just runs the cargo 
 sh run.sh
 ```
 
-## Content
-
-- [Portfolio App, using Rust, Actix-web, Handlebars and HTMX](#portfolio-app-using-rust-actix-web-handlebars-and-htmx)
-  - [Content](#content)
+Provided that you have the required dependencies installed, ei Rust, Node, NPM and Cargo with cargo-watch plus the tailwindcss cli globally. I will not go into details on how to install these, as there are plenty of guides out there on how to do it.
